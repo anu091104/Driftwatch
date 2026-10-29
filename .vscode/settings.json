@@ -1,0 +1,19 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+  "python.terminal.activateEnvironment": true,
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": ["tests", "-q"],
+  "terminal.integrated.env.windows": {
+    "PIP_CACHE_DIR": "${workspaceFolder}\\.cache\\pip",
+    "TEMP": "${workspaceFolder}\\.cache\\tmp",
+    "TMP": "${workspaceFolder}\\.cache\\tmp",
+    "MLFLOW_DISABLE_TELEMETRY": "true",
+    "MLFLOW_DISABLE_AGENT_HINT": "1",
+    "PYTHONWARNINGS": "ignore"
+  },
+  "files.exclude": {
+    "**/__pycache__": true,
+    ".cache": true,
+    ".pytest_cache": true
+  }
+}

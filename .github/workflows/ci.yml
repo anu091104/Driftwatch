@@ -1,0 +1,37 @@
+name: CI - test and benchmark
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test-and-benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Unit tests
+        run: pytest -q
+      - name: Quick benchmark (2 seeds)
+        run: python -m src.experiment --quick --no-mlflow
+      - name: Quality gate - DDM must recover from concept drift
+        run: |
+          python -c "
+          import pandas as pd
+          s = pd.read_csv('results/summary.csv').set_index(['scenario','strategy'])
+          ddm, none = s.loc[('concept','DDM'),'acc_post_drift'], s.loc[('concept','none'),'acc_post_drift']
+          print(f'DDM {ddm:.3f} vs no retraining {none:.3f}')
+          assert ddm > none + 0.1, 'Retraining pipeline regression!'
+          "
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: results/

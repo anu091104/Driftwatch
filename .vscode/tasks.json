@@ -1,0 +1,56 @@
+{
+  "version": "2.0.0",
+  "options": {
+    "cwd": "${workspaceFolder}",
+    "env": {
+      "PIP_CACHE_DIR": "${workspaceFolder}\\.cache\\pip",
+      "TEMP": "${workspaceFolder}\\.cache\\tmp",
+      "TMP": "${workspaceFolder}\\.cache\\tmp",
+      "MLFLOW_DISABLE_TELEMETRY": "true",
+      "MLFLOW_DISABLE_AGENT_HINT": "1",
+      "PYTHONWARNINGS": "ignore"
+    },
+    "shell": {
+      "executable": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command"]
+    }
+  },
+  "tasks": [
+    {
+      "label": "1. Setup (first time only)",
+      "type": "shell",
+      "command": "New-Item -ItemType Directory -Force .cache\\tmp | Out-Null; if (!(Test-Path .venv\\Scripts\\python.exe)) { python -m venv .venv }; .venv\\Scripts\\python.exe -m pip install --default-timeout=200 --retries 10 -r requirements.txt",
+      "problemMatcher": []
+    },
+    {
+      "label": "2. Live demo",
+      "type": "shell",
+      "command": ".venv\\Scripts\\python.exe -m src.demo",
+      "problemMatcher": []
+    },
+    {
+      "label": "3. Full benchmark + open report",
+      "type": "shell",
+      "command": ".venv\\Scripts\\python.exe -m src.experiment --jobs 2; if ($?) { Start-Process results\\report.html }",
+      "problemMatcher": []
+    },
+    {
+      "label": "4. Start API (Swagger docs)",
+      "type": "shell",
+      "command": "Start-Process 'http://127.0.0.1:8000/docs'; .venv\\Scripts\\python.exe -m uvicorn api.main:app --port 8000",
+      "problemMatcher": []
+    },
+    {
+      "label": "5. Start MLflow dashboard",
+      "type": "shell",
+      "command": "Start-Process 'http://127.0.0.1:5000'; .venv\\Scripts\\python.exe -m mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000",
+      "problemMatcher": []
+    },
+    {
+      "label": "6. Run tests",
+      "type": "shell",
+      "command": ".venv\\Scripts\\python.exe -m pytest -q",
+      "problemMatcher": []
+    }
+  ]
+}

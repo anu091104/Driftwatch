@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Live demo",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "src.demo",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "env": { "MLFLOW_DISABLE_TELEMETRY": "true", "MLFLOW_DISABLE_AGENT_HINT": "1", "PYTHONWARNINGS": "ignore" }
+    },
+    {
+      "name": "Full benchmark",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "src.experiment",
+      "args": ["--jobs", "2"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "env": { "MLFLOW_DISABLE_TELEMETRY": "true", "MLFLOW_DISABLE_AGENT_HINT": "1", "PYTHONWARNINGS": "ignore" }
+    },
+    {
+      "name": "API (FastAPI)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["api.main:app", "--port", "8000"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "env": { "PYTHONWARNINGS": "ignore" }
+    }
+  ]
+}
