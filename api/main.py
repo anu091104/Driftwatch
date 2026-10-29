@@ -23,6 +23,12 @@ app = FastAPI(title="DriftWatch API",
               description="Loan-default model serving with built-in data-drift checks.",
               version="1.0")
 
+from fastapi.responses import RedirectResponse
+
+@app.get("/", include_in_schema=False)
+def home():
+    return RedirectResponse("/docs")
+
 
 class Applicant(BaseModel):
     age: float = Field(35, ge=18, le=100)
